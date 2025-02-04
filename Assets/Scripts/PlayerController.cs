@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         float moveInput = Input.GetAxisRaw("Horizontal");
         float moveSpeed = isCrouching ? crouchSpeed : speed;
 
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         
         if (moveInput != 0)
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             anim.SetTrigger("jump");
         }
     }
@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("slide");
 
             float slideDirection = transform.localScale.x; 
-            rb.velocity = new Vector2(slideSpeed * slideDirection, rb.velocity.y);
+            rb.linearVelocity = new Vector2(slideSpeed * slideDirection, rb.linearVelocity.y);
 
             Invoke("EndSlide", slideDuration);
         }
