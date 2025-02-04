@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public float slideDuration = 0.5f; 
 
     public LayerMask groundLayer;
+    public Transform groundCheck;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -24,10 +25,28 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Move();
-        Jump();
+        CheckGround();
         Crouch();
         Slide();
+        Move();
+        Jump();
+
+    }
+
+    void CheckGround()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.01f, groundLayer);
+
+         if (isGrounded)
+        {
+            Debug.Log("Player is on the ground");
+        }
+        else
+        {
+            Debug.Log("Player is in the air");
+        }
+        anim.SetBool("isGrounded", isGrounded);
+
     }
 
     void Move()
@@ -42,7 +61,8 @@ public class PlayerController : MonoBehaviour
         
         if (moveInput != 0)
         {
-            transform.localScale = new Vector3(Mathf.Sign(moveInput), 1, 1);
+            //transform.localScale = new Vector3(Mathf.Sign(moveInput), 0.1f, 0.1f);
+            transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             anim.SetBool("isRunning", true);
         }
         else
@@ -55,8 +75,9 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
 
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
         {
+            isGrounded = true;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             anim.SetTrigger("jump");
         }
@@ -64,13 +85,15 @@ public class PlayerController : MonoBehaviour
 
     void Crouch()
     {
-        if (Input.GetKey(KeyCode.S) && isGrounded)
+        if (Input.GetKey(KeyCode.S))
         {
             isCrouching = true;
+            isGrounded = true;
             anim.SetBool("isCrouching", true);
         }
         else
         {
+            isGrounded = false;
             isCrouching = false;
             anim.SetBool("isCrouching", false);
         }
@@ -94,4 +117,5 @@ public class PlayerController : MonoBehaviour
     {
         isSliding = false;
     }
+     
 }
