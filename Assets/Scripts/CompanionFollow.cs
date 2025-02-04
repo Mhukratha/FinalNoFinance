@@ -4,13 +4,15 @@ public class CompanionFollow : MonoBehaviour
 {
     public Transform player;  // ตัวละครหลัก
     public float followSpeed = 5f;
-    public float stoppingDistance = 1.5f;
+    public float stoppingDistance = 1f;
     public float missionCompleteDelay = 2f; // เวลาหน่วงก่อนกลับหาผู้เล่น
+    public float verticalOffset = 1f; // ความสูงที่ Companion อยู่เหนือ Player
 
     private Rigidbody2D rb;
     private Vector2 movement;
     private Vector2 targetPosition;
     private bool isCustomTargetSet = false;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private enum CompanionState { FollowingPlayer, GoingToTarget, ReturningToPlayer }
     private CompanionState currentState = CompanionState.FollowingPlayer;
@@ -33,14 +35,16 @@ public class CompanionFollow : MonoBehaviour
                 MoveToTarget(targetPosition, CompanionState.ReturningToPlayer);
                 break;
             case CompanionState.ReturningToPlayer:
-                MoveToTarget(player.position, CompanionState.FollowingPlayer);
+                FollowPlayer();
                 break;
         }
 
         if (movement.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);  // หันไปทางขวา
+            //transform.localScale = new Vector3(1, 1, 1);  
+            spriteRenderer.flipX = false; // หันไปทางขวา
         else if (movement.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1); // หันไปทางซ้าย
+            //transform.localScale = new Vector3(-1, 1, 1); 
+            spriteRenderer.flipX = true; // หันไปทางซ้าย
 
     }
 
@@ -56,10 +60,12 @@ public class CompanionFollow : MonoBehaviour
     {
         if (isCustomTargetSet) return; // หยุดเดินตาม Player ถ้ามีเป้าหมายใหม่
 
-        float distance = Vector2.Distance(transform.position, player.position);
+        Vector2 playerTarget = GetPlayerPositionWithOffset();
+
+        float distance = Vector2.Distance(transform.position, playerTarget);
         if (distance > stoppingDistance)
         {
-            movement = (player.position - transform.position).normalized;
+            movement = (playerTarget - (Vector2)transform.position).normalized;
         }
         else
         {
@@ -69,6 +75,7 @@ public class CompanionFollow : MonoBehaviour
 
     void MoveToTarget(Vector2 target, CompanionState nextState)
     {
+        
         float distance = Vector2.Distance(transform.position, target);
         if (distance > 0.5f)
         {
@@ -94,5 +101,11 @@ public class CompanionFollow : MonoBehaviour
         targetPosition = newPosition;
         isCustomTargetSet = true;
         currentState = CompanionState.GoingToTarget;
+    }
+
+    // คำนวณตำแหน่ง Player พร้อม Offset ความสูง
+    private Vector2 GetPlayerPositionWithOffset()
+    {
+        return new Vector2(player.position.x, player.position.y + verticalOffset);
     }
 }
