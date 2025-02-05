@@ -29,7 +29,7 @@ public class CoreManager : MonoBehaviour
     {
         if (other.CompareTag("Player")) // ตรวจสอบว่าเป็น Player และยังไม่ Trigger มาก่อน
         {
-            if (haveKeyItem)
+            if (giveKeyText != null)
             {
             giveKeyText.SetActive(false); // ปิด UI
             isPlayerNearby = false; // Player อยู่ไกล
