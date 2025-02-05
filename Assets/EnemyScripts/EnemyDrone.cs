@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal; // ใช้ Light2D
+using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class EnemyLightPatrol2D : MonoBehaviour
+public class EnemyDrone : MonoBehaviour
 {
+    public GameObject playerPrefab; // เก็บ Prefab ของ Player
+    private Transform playerTransform; // เก็บตำแหน่งของ Player ในเกม
+
     public Light2D enemyLight;          // Spot Light 2D
     public float patrolDistance = 3f;   // ระยะเดิน
     public float moveSpeed = 2f;        // ความเร็วเดิน
@@ -16,18 +20,52 @@ public class EnemyLightPatrol2D : MonoBehaviour
     private bool isTurning = false;
     private bool playerDetected = false;
 
+    public float followSpeed = 3f;  // ความเร็วในการบิน
+    public float rotationSpeed = 5f; // ความเร็วในการหันหน้า
+    public float stopDistance = 1.5f; // ระยะห่างจาก Player ที่ศัตรูจะหยุดบิน
+    public float heightOffset = 1.5f; // ความสูงที่ศัตรูจะบินเหนือ Player
+
+    private float timeSinceLastSeen = 0f; // เวลานับถอยหลังเมื่อไม่เห็น Player
+    public float lostPlayerTime = 2f; // เวลาที่จะรอก่อนกลับไปที่จุดเริ่มต้น
+
+    private float timeInLight = 0f; // เวลาที่ Player อยู่ในแสง
+    public float timeToChangeScene = 3f; // กำหนดเวลาก่อนเปลี่ยนซีน
+
+
+
     private void Start()
     {
         startPosition = transform.position;
+
+        // ค้นหา Player ที่เกิดจาก Prefab
+        if (playerPrefab != null)
+        {
+            GameObject playerInstance = GameObject.Find(playerPrefab.name);
+            if (playerInstance != null)
+            {
+                playerTransform = playerInstance.transform;
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ ไม่พบ Player ที่สร้างจาก Prefab!");
+            }
+        }
     }
+
 
     private void Update()
     {
-        if (!playerDetected)
+        DetectPlayer();  // ตรวจจับ Player
+
+        if (playerDetected)
         {
-            Patrol();  // ถ้าไม่เจอผู้เล่นให้เดินไป
+            FollowPlayer(); // บินตาม Player ถ้าเจอ
         }
-        DetectPlayer();  // ตรวจสอบการตรวจจับผู้เล่น
+        else
+        {
+            Patrol(); // ถ้ายังไม่เจอ Player ให้เดินปกติ
+        }
+
         CheckIfInLight(); // ตรวจสอบว่าศัตรูอยู่ในพื้นที่แสงหรือไม่
     }
 
@@ -66,38 +104,69 @@ public class EnemyLightPatrol2D : MonoBehaviour
         // ค้นหาผู้เล่นในรัศมีของ Spot Light
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, enemyLight.pointLightOuterRadius);
 
-        foreach (Collider2D hit in hitColliders)
+        if (playerTransform == null) return;
+
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+        if (distanceToPlayer <= enemyLight.pointLightOuterRadius)
         {
-            if (hit.CompareTag(playerTag))  // ตรวจสอบว่า collider นั้นมี Tag ที่ตรงกับ playerTag
+            Vector2 directionToPlayer = (playerTransform.position - transform.position).normalized;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer);
+
+            if (hit.collider != null && hit.collider.gameObject == playerTransform.gameObject)
             {
-                Transform playerTransform = hit.transform;
-                Vector2 directionToPlayer = (playerTransform.position - transform.position).normalized;
-                float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+                Debug.Log("✅ พบ Player!");
+                playerDetected = true;
+                timeInLight += Time.deltaTime; // นับเวลาที่ Player อยู่ในแสง
 
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer, obstacleLayer);
-
-                if (!raycastHit.collider) // ไม่มีสิ่งกีดขวาง
+                if (timeInLight >= timeToChangeScene)
                 {
-                    if (IsPlayerInSpotLight(playerTransform))
-                    {
-                        Debug.Log("✅ Player detected in Spot Light!");
-                        playerDetected = true;
-                        OnPlayerDetected();
-                        return; // หยุดตรวจจับต่อ
-                    }
-                }
-                else
-                {
-                    Debug.Log("⛔ Raycast Blocked by: " + raycastHit.collider.gameObject.name);
+                    Debug.Log("🔄 เปลี่ยนซีน!");
+                    SceneManager.LoadScene(0); // แก้เป็นชื่อซีนที่ต้องการ
                 }
             }
+            else
+            {
+                playerDetected = false;
+                timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากแสง
+            }
         }
-
-        // ถ้าไม่เจอผู้เล่น ให้รีเซ็ตสถานะการตรวจจับ
-        if (hitColliders.Length == 0)
+        else
         {
             playerDetected = false;
+            timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากระยะ
         }
+    }
+
+    void StartLosingPlayer()
+    {
+        if (playerDetected)
+        {
+            timeSinceLastSeen += Time.deltaTime;
+
+            if (timeSinceLastSeen >= lostPlayerTime)
+            {
+                Debug.Log("⏳ ไม่พบ Player เกิน 2 วิ กลับจุดเดิม");
+                playerDetected = false;
+                ReturnToStart();
+            }
+        }
+    }
+
+    void ReturnToStart()
+    {
+        StopAllCoroutines();
+        StartCoroutine(MoveToStartPosition());
+    }
+
+    IEnumerator MoveToStartPosition()
+    {
+        while (Vector2.Distance(transform.position, startPosition) > 0.1f)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, startPosition, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        Debug.Log("🚀 กลับมาที่จุดเดิม!");
     }
 
     bool IsPlayerInSpotLight(Transform player)
@@ -152,5 +221,35 @@ public class EnemyLightPatrol2D : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, enemyLight.pointLightOuterRadius);
+    }
+
+    void FollowPlayer()
+    {
+        if (playerTransform == null) return; // ถ้าไม่มี Player ไม่ต้องทำอะไร
+
+        // คำนวณระยะห่างระหว่างศัตรูกับ Player (เฉพาะแกน X)
+        float distanceToPlayerX = Mathf.Abs(playerTransform.position.x - transform.position.x);
+
+        // ถ้าศัตรูยังอยู่ไกลกว่า stopDistance ให้บินเข้าไปหา Player (เฉพาะแกน X)
+        if (distanceToPlayerX > stopDistance)
+        {
+            float newX = Mathf.MoveTowards(transform.position.x, playerTransform.position.x, followSpeed * Time.deltaTime);
+            float newY = Mathf.MoveTowards(transform.position.y, playerTransform.position.y + heightOffset, followSpeed * Time.deltaTime);
+
+            transform.position = new Vector3(newX, newY, transform.position.z); // อัปเดตตำแหน่ง
+        }
+
+        // คำนวณทิศทางของ Player
+        float directionX = playerTransform.position.x - transform.position.x;
+
+        // หันหน้าไปทาง Player โดยคงขนาดไว้ที่ 0.15
+        if (directionX > 0)
+        {
+            transform.localScale = new Vector3(-0.15f, 0.15f, 1); // หันขวา
+        }
+        else if (directionX < 0)
+        {
+            transform.localScale = new Vector3(0.15f, 0.15f, 1); // หันซ้าย
+        }
     }
 }

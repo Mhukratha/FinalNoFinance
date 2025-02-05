@@ -438,10 +438,10 @@ MonoBehaviour:
   m_LocalBounds:
     m_Center: {x: 0, y: -0.00000011920929, z: 0}
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 29.5
-  m_PointLightOuterAngle: 29.5
+  m_PointLightInnerAngle: 24.92
+  m_PointLightOuterAngle: 24.92
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 7.1221957
+  m_PointLightOuterRadius: 5.2460046
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -460,7 +460,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275775452}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7969893, y: -0.6039935, z: -0, w: 0}
+  m_LocalRotation: {x: -0.8779125, y: -0.47882113, z: -0, w: 0}
   m_LocalPosition: {x: -0.5, y: -0.6, z: 0}
   m_LocalScale: {x: 7.011148, y: 7.011148, z: 7.011148}
   m_ConstrainProportionsScale: 0
@@ -1420,6 +1420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152f3867343e36741b6e217b5553e266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 1288540316}
   enemyLight: {fileID: 275775453}
   patrolDistance: 3
   moveSpeed: 2
@@ -1428,6 +1429,11 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
+  followSpeed: 3
+  rotationSpeed: 5
+  stopDistance: 1.5
+  heightOffset: 1.5
+  lostPlayerTime: 2
 --- !u!1 &1124769241
 GameObject:
   m_ObjectHideFlags: 0
@@ -2146,6 +2152,12 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.28, y: 1.28}
   m_EdgeRadius: 0
+--- !u!1 &1288540316 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3469160786398809416, guid: 319a5d3cb40dd2c4eac1885df3357d25,
+    type: 3}
+  m_PrefabInstance: {fileID: 5367156175312378571}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1320621015
 GameObject:
   m_ObjectHideFlags: 0
