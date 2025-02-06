@@ -135,6 +135,27 @@ public class EnemyDrone : MonoBehaviour
             playerDetected = false;
             timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากระยะ
         }
+
+        if (playerTransform == null) return;
+
+        if (IsPlayerInSpotLight(playerTransform))
+        {
+            Debug.Log("✅ Player ถูกจับได้ในแสง!");
+            playerDetected = true;
+            timeInLight += Time.deltaTime;
+
+            if (timeInLight >= timeToChangeScene)
+            {
+                Debug.Log("🔄 เปลี่ยนซีน!");
+                SceneManager.LoadScene(0);
+            }
+        }
+        else
+        {
+            Debug.Log("😎 Player หลบอยู่ในเงาหรือมีสิ่งกีดขวาง!");
+            playerDetected = false;
+            timeInLight = 0f;
+        }
     }
 
     void StartLosingPlayer()
@@ -171,12 +192,28 @@ public class EnemyDrone : MonoBehaviour
 
     bool IsPlayerInSpotLight(Transform player)
     {
-        Vector2 directionToPlayer = (player.position - transform.position).normalized;
-        float angleToPlayer = Vector2.Angle(transform.right * (movingRight ? 1 : -1), directionToPlayer);
+        Vector2 directionToPlayer = (player.position - enemyLight.transform.position).normalized;
+        float angleToPlayer = Vector2.Angle(enemyLight.transform.up, directionToPlayer);
 
-        Debug.Log($"🔦 Angle to Player: {angleToPlayer}, Allowed: {enemyLight.pointLightInnerAngle / 2}");
+        // ตรวจสอบว่า Player อยู่ในกรวยแสงของโดรนหรือไม่
+        if (angleToPlayer > enemyLight.pointLightInnerAngle / 2) return false;
 
-        return angleToPlayer < enemyLight.pointLightInnerAngle / 2;
+        float distanceToPlayer = Vector2.Distance(enemyLight.transform.position, player.position);
+
+        // ใช้ Raycast เช็คว่ามีสิ่งกีดขวางระหว่างแสงกับ Player ไหม
+        RaycastHit2D hit = Physics2D.Raycast(enemyLight.transform.position, directionToPlayer, distanceToPlayer, obstacleLayer);
+
+        // วาดเส้น Raycast เพื่อดูผลการตรวจสอบ
+        Debug.DrawRay(enemyLight.transform.position, directionToPlayer * distanceToPlayer, Color.red, 0.1f);
+
+        if (hit.collider != null && hit.collider.gameObject != player.gameObject)
+        {
+            Debug.Log("🛑 Player ถูกบังโดย: " + hit.collider.gameObject.name);
+            return false; // มีสิ่งกีดขวาง → Player ซ่อนตัวได้
+        }
+
+        Debug.Log("🔦 Player อยู่ในแสงและไม่มีอะไรกั้น!");
+        return true;
     }
 
     void OnPlayerDetected()
