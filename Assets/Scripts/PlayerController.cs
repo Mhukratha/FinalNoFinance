@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     private bool isCrouching = false;
     private bool isSliding = false;
 
+    private bool isOnZipline = false;
+    private Transform zipEndPoint;
+    private float zipSpeed;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -30,6 +34,19 @@ public class PlayerController : MonoBehaviour
         Slide();
         Move();
         Jump();
+
+
+         if (isOnZipline)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, zipEndPoint.position, zipSpeed * Time.deltaTime);
+
+            if (Vector2.Distance(transform.position, zipEndPoint.position) < 0.1f)
+            {
+                isOnZipline = false;
+                rb.gravityScale = 1;
+                Debug.Log("🎯 ");
+            }
+        }
 
     }
 
@@ -118,4 +135,25 @@ public class PlayerController : MonoBehaviour
         isSliding = false;
     }
      
+
+
+     private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Zipline"))
+        {
+            Debug.Log("🚀 Player Grabbed the Zipline!");
+
+            // ดึงค่าจาก Zipline ที่ Player จับ
+            Zipline zipline = collision.GetComponent<Zipline>();
+            if (zipline != null)
+            {
+                zipEndPoint = zipline.endPoint;
+                zipSpeed = zipline.zipSpeed;
+                isOnZipline = true;
+
+                rb.gravityScale = 0;
+                rb.linearVelocity = Vector2.zero;
+            }
+        }
+    }
 }
