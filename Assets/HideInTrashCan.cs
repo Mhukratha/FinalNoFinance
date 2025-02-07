@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;  // ใช้สำหรับ UI
 
 public class HideInTrashCan : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class HideInTrashCan : MonoBehaviour
     private SpriteRenderer[] playerRenderers; // ใช้ SpriteRenderer สำหรับ 2D
     private Rigidbody2D playerRigidbody; // ใช้ Rigidbody2D
     private Vector3 originalPosition; // ตำแหน่งเริ่มต้นของถังขยะ
+
+    // UI Elements
+    public GameObject trashCanUI; // UI ที่จะแสดงเมื่อผู้เล่นอยู่ใกล้ถังขยะ
 
     void Start()
     {
@@ -36,17 +41,26 @@ public class HideInTrashCan : MonoBehaviour
         }
 
         originalPosition = transform.position; // เก็บตำแหน่งเริ่มต้นของถังขยะ
+        trashCanUI.SetActive(false); // ซ่อน UI ตอนเริ่มต้น
     }
 
     void Update()
     {
-        if (nearTrashCan && Input.GetKeyDown(KeyCode.E))
+        if (nearTrashCan)
         {
-            ToggleHiding();
-            if (!isHiding) // ถ้าไม่ได้ซ่อน (จะต้องสั่นหลังจากออกจากการซ่อน)
+            trashCanUI.SetActive(true); // แสดง UI เมื่อใกล้ถังขยะ
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                StartCoroutine(ShakeTrashCan());
+                ToggleHiding();
+                if (!isHiding) // ถ้าไม่ได้ซ่อน (จะต้องสั่นหลังจากออกจากการซ่อน)
+                {
+                    StartCoroutine(ShakeTrashCan());
+                }
             }
+        }
+        else
+        {
+            trashCanUI.SetActive(false); // ซ่อน UI เมื่อไม่อยู่ใกล้ถังขยะ
         }
     }
 
