@@ -34,8 +34,7 @@ public class PlayerController : MonoBehaviour
         Slide();
         Move();
         Jump();
-
-
+        
          if (isOnZipline)
         {
             transform.position = Vector2.MoveTowards(transform.position, zipEndPoint.position, zipSpeed * Time.deltaTime);
@@ -52,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckGround()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.01f, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
          if (isGrounded)
         {
@@ -89,28 +88,27 @@ public class PlayerController : MonoBehaviour
     }
 
     void Jump()
-    {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
+{
+    if (!isGrounded || isCrouching) return; 
 
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
-        {
-            isGrounded = true;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            anim.SetTrigger("jump");
-        }
+    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        anim.SetTrigger("jump");
+        isGrounded = false; 
     }
+}
+
 
     void Crouch()
     {
         if (Input.GetKey(KeyCode.S))
         {
             isCrouching = true;
-            isGrounded = true;
             anim.SetBool("isCrouching", true);
         }
         else
         {
-            isGrounded = false;
             isCrouching = false;
             anim.SetBool("isCrouching", false);
         }
@@ -135,7 +133,6 @@ public class PlayerController : MonoBehaviour
         isSliding = false;
     }
      
-
 
      private void OnTriggerEnter2D(Collider2D collision)
     {
