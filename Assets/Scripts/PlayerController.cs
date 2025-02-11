@@ -34,17 +34,18 @@ public class PlayerController : MonoBehaviour
         Slide();
         Move();
         Jump();
-
-
+        
          if (isOnZipline)
         {
             transform.position = Vector2.MoveTowards(transform.position, zipEndPoint.position, zipSpeed * Time.deltaTime);
+            anim.SetBool("isOnZipline", true);
 
             if (Vector2.Distance(transform.position, zipEndPoint.position) < 0.1f)
             {
                 isOnZipline = false;
                 rb.gravityScale = 1;
                 Debug.Log("🎯 ");
+                anim.SetBool("isOnZipline", false);
             }
         }
 
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckGround()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.01f, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
          if (isGrounded)
         {
@@ -68,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        if (isSliding) return; 
+        if (isSliding || isOnZipline) return; 
 
         float moveInput = Input.GetAxisRaw("Horizontal");
         float moveSpeed = isCrouching ? crouchSpeed : speed;
@@ -89,28 +90,27 @@ public class PlayerController : MonoBehaviour
     }
 
     void Jump()
-    {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
+{
+    if (!isGrounded || isCrouching) return; 
 
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
-        {
-            isGrounded = true;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            anim.SetTrigger("jump");
-        }
+    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        anim.SetTrigger("jump");
+        isGrounded = false; 
     }
+}
+
 
     void Crouch()
     {
         if (Input.GetKey(KeyCode.S))
         {
             isCrouching = true;
-            isGrounded = true;
             anim.SetBool("isCrouching", true);
         }
         else
         {
-            isGrounded = false;
             isCrouching = false;
             anim.SetBool("isCrouching", false);
         }
@@ -136,14 +136,11 @@ public class PlayerController : MonoBehaviour
     }
      
 
-
-     private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Zipline"))
         {
             Debug.Log("🚀 Player Grabbed the Zipline!");
-
-            // ดึงค่าจาก Zipline ที่ Player จับ
             Zipline zipline = collision.GetComponent<Zipline>();
             if (zipline != null)
             {
@@ -153,6 +150,8 @@ public class PlayerController : MonoBehaviour
 
                 rb.gravityScale = 0;
                 rb.linearVelocity = Vector2.zero;
+
+                anim.SetBool("isOnZipline", true);
             }
         }
     }
