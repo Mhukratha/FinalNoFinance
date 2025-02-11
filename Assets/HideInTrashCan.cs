@@ -72,7 +72,7 @@ public class HideInTrashCan : MonoBehaviour
             Debug.Log("[HideInTrashCan] Player is hiding.");
             player.transform.position = hidePosition.position;
             playerMovement.enabled = false; // ปิดการเคลื่อนที่
-            playerRigidbody.velocity = Vector2.zero; // หยุดความเร็ว
+            playerRigidbody.linearVelocity = Vector2.zero; // หยุดความเร็ว
             playerRigidbody.bodyType = RigidbodyType2D.Kinematic; // ป้องกันตกแมพ
             SetPlayerVisible(false); // ซ่อน
         }
