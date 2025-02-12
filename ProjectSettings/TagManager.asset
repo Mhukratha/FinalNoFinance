@@ -9,6 +9,7 @@ TagManager:
   - FxTemporaire
   - Zipline
   - RopeTrigger
+  - Drone
   layers:
   - Default
   - TransparentFX

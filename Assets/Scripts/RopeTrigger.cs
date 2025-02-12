@@ -2,19 +2,20 @@ using UnityEngine;
 
 public class RopeTrigger : MonoBehaviour
 {
-    public GameObject ropePrefab;  // Assign your rope prefab in the inspector
+    public GameObject ropePrefab;  
+    public Transform spawnPoint; 
     private GameObject ropeInstance;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("RopeTrigger")) // Ensure the trigger object has this tag
+        if (other.CompareTag("Drone")) 
         {
-            if (ropeInstance == null) // Prevent multiple ropes from spawning
+            if (ropeInstance == null) 
             {
-                ropeInstance = Instantiate(ropePrefab, transform.position, Quaternion.Euler(0, 0, 90));
+                Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
+                ropeInstance = Instantiate(ropePrefab, spawnPosition, Quaternion.identity);
             }
         }
     }
 
-   
 }
