@@ -8,6 +8,7 @@ TagManager:
   - Obstacles
   - FxTemporaire
   - Zipline
+  - RopeTrigger
   layers:
   - Default
   - TransparentFX
