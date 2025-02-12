@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      neongoodback_0: -4968997409306230308
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
