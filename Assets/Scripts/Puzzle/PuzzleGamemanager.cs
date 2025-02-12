@@ -59,7 +59,7 @@ public class PuzzleGamemanager : MonoBehaviour
                     uv[0] = new Vector2((width * col) + gap, 1 - ((width * (row + 1)) - gap)); // *width ด้วย col กับ high ด้วยแถว
                     uv[1] = new Vector2((width * (col + 1)) - gap, 1 - ((width * (row + 1)) - gap));
                     uv[2] = new Vector2((width * col) + gap, 1 - ((width * row) + gap));
-                    uv[3] = new Vector2((width * (col + 1)) - gap, 1 - ((width * row) * gap));
+                    uv[3] = new Vector2((width * (col + 1)) - gap, 1 - ((width * row) + gap));
                     
                     //แนบพิกัดUV ที่สร้างมาใหม่เข้ากับQuad
                     mesh.uv = uv;
@@ -123,7 +123,7 @@ public class PuzzleGamemanager : MonoBehaviour
     {
         for (int i = 0; i < pieces.Count; i++)
         {
-            if (pieces[i].name != $"(i)")
+            if (pieces[i].name != $"{i}")
             {
                 return false;
             }
