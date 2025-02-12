@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9d52d8bb9fb4b1c4f9381a4ee6656710
+guid: 7713163b309910444b8e92225747b074
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7146289355900970258
-    second: openart-image_iOMTrnJm_1739311383030_raw_0
+      213: 2282524234328055362
+    second: deathrobot_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: openart-image_iOMTrnJm_1739311383030_raw_0
+      name: deathrobot_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1024
-        height: 1024
+        x: 130
+        y: 206
+        width: 1021
+        height: 867
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eea1e5781b743dc90800000000000000
-      internalID: -7146289355900970258
+      spriteID: 24e1852a2b72daf10800000000000000
+      internalID: 2282524234328055362
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      openart-image_iOMTrnJm_1739311383030_raw_0: -7146289355900970258
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
