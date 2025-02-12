@@ -2527,7 +2527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDisplayUI: {fileID: 2134577735}
-  displayTime: 2
+  displayTime: 50
 --- !u!4 &558011886
 Transform:
   m_ObjectHideFlags: 0
