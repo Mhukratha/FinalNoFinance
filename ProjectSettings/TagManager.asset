@@ -50,5 +50,8 @@ TagManager:
   - name: object
     uniqueID: 1567527025
     locked: 0
+  - name: Canvas
+    uniqueID: 259525477
+    locked: 0
   m_RenderingLayers:
   - Default
