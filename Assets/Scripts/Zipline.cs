@@ -8,6 +8,11 @@ public class Zipline : MonoBehaviour
 
     private void Start()
     {
+        SetupLineRenderer();
+    }
+
+    private void SetupLineRenderer()
+    {
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer != null)
         {

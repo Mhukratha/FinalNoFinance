@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool isOnZipline = false;
     private Transform zipEndPoint;
     private float zipSpeed;
+    private bool canGrabZipline = false;
 
     void Start()
     {
@@ -35,6 +36,15 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         
+
+        if (canGrabZipline && !isOnZipline && Input.GetKeyDown(KeyCode.E))
+        {
+            GrabZipline();
+        }
+        if (isOnZipline && Input.GetKeyDown(KeyCode.Space))
+        {
+            ReleaseZipline();
+        }
          if (isOnZipline)
         {
             transform.position = Vector2.MoveTowards(transform.position, zipEndPoint.position, zipSpeed * Time.deltaTime);
@@ -42,10 +52,7 @@ public class PlayerController : MonoBehaviour
 
             if (Vector2.Distance(transform.position, zipEndPoint.position) < 0.1f)
             {
-                isOnZipline = false;
-                rb.gravityScale = 1;
-                Debug.Log("🎯 ");
-                anim.SetBool("isOnZipline", false);
+                ReleaseZipline();
             }
         }
 
@@ -140,19 +147,37 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Zipline"))
         {
-            Debug.Log("🚀 Player Grabbed the Zipline!");
+            Debug.Log("🔹 Player Near Zipline!");
             Zipline zipline = collision.GetComponent<Zipline>();
             if (zipline != null)
             {
                 zipEndPoint = zipline.endPoint;
                 zipSpeed = zipline.zipSpeed;
-                isOnZipline = true;
-
-                rb.gravityScale = 0;
-                rb.linearVelocity = Vector2.zero;
-
-                anim.SetBool("isOnZipline", true);
+                canGrabZipline = true; 
             }
         }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Zipline"))
+        {
+            canGrabZipline = false; 
+        }
+    }
+    void GrabZipline()
+    {
+        Debug.Log("🚀 Player Grabbed the Zipline!");
+        isOnZipline = true;
+        rb.gravityScale = 0; // ปิด Gravity เพื่อให้ Player ลอย
+        rb.linearVelocity = Vector2.zero;
+        anim.SetBool("isOnZipline", true); // เปิดอนิเมชัน
+    }
+     void ReleaseZipline()
+    {
+        Debug.Log("🔻 Player Released the Zipline!");
+        isOnZipline = false;
+        rb.gravityScale = 1; // เปิด Gravity กลับมา
+        rb.linearVelocity = Vector2.zero;
+        anim.SetBool("isOnZipline", false); // ปิดอนิเมชัน
     }
 }
