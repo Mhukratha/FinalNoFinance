@@ -5,7 +5,7 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory instance; // Singleton สำหรับเรียกใช้งานง่าย
     public Image itemDisplayUI; // UI Image สำหรับแสดงไอเทมที่เก็บได้
-    public float displayTime = 2f; // เวลาที่ไอเทมจะโชว์บนหน้าจอ
+    public float displayTime = 50f; // เวลาที่ไอเทมจะโชว์บนหน้าจอ
 
     private void Awake()
     {
