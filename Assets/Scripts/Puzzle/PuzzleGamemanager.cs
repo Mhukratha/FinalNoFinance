@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using Unity.Mathematics;
 using Random = UnityEngine.Random;
+using TMPro;
+using UnityEngine.UI;
 
 public class PuzzleGamemanager : MonoBehaviour
 {
     [SerializeField] private Transform gameTrans;
 
     [SerializeField] private Transform piecePrefabs;
+    
+    [SerializeField] private TextMeshProUGUI continueText;
 
     private List<Transform> pieces;
     private int emptyLocation;
@@ -75,6 +79,8 @@ public class PuzzleGamemanager : MonoBehaviour
         pieces = new List<Transform>();
         size = 3;
         CreateGamePiece(0.01f);
+        StartCoroutine(WaitShuffle(0.5f));
+        continueText.gameObject.SetActive(false); // ซ่อนข้อความตอนเริ่มเกม
     }
 
     // Update is called once per frame
@@ -83,7 +89,10 @@ public class PuzzleGamemanager : MonoBehaviour
         if (!shuffling && CheckCompletetion())
         {
             shuffling = true;
-            StartCoroutine(WaitShuffle(0.5f));
+            //StartCoroutine(WaitShuffle(0.5f));
+            continueText.gameObject.SetActive(true); // แสดงข้อความเมื่อเกมจบ
+            OnContinueButtonPressed();
+            return;
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -170,6 +179,13 @@ public class PuzzleGamemanager : MonoBehaviour
                 count++;
             }
         }
+    }
+    
+    public void OnContinueButtonPressed()
+    {
+        Debug.Log("Continue Pressed!");
+        //โหลดฉากถัดไป
+        //Scene3.LoadScene(Scene3.GetActiveScene().buildIndex + 1);
     }
 }
 
