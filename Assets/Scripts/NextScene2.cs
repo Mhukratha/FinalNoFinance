@@ -4,7 +4,7 @@ public class NextScene2 : MonoBehaviour
 {
     void OnEnable()
     {
-        SceneManager.LoadScene("MainGame1",LoadSceneMode.Single);
+        SceneManager.LoadScene("MAP1",LoadSceneMode.Single);
     }
 }
 
