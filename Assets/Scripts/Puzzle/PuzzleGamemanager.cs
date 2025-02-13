@@ -80,7 +80,6 @@ public class PuzzleGamemanager : MonoBehaviour
         size = 3;
         CreateGamePiece(0.01f);
         StartCoroutine(WaitShuffle(0.5f));
-        continueText.gameObject.SetActive(false); // ซ่อนข้อความตอนเริ่มเกม
     }
 
     // Update is called once per frame
@@ -89,11 +88,12 @@ public class PuzzleGamemanager : MonoBehaviour
         if (!shuffling && CheckCompletetion())
         {
             shuffling = true;
-            //StartCoroutine(WaitShuffle(0.5f));
             continueText.gameObject.SetActive(true); // แสดงข้อความเมื่อเกมจบ
-            OnContinueButtonPressed();
+            Debug.Log("codition is active");
             return;
+            
         }
+        //Debug.Log("Active");
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), 
@@ -145,6 +145,7 @@ public class PuzzleGamemanager : MonoBehaviour
         yield return new WaitForSeconds(duration);
         Shuffle();
         shuffling = false;
+        continueText.gameObject.SetActive(false); // ซ่อนข้อความตอนเริ่มเกม
     }
 
     private void Shuffle()
