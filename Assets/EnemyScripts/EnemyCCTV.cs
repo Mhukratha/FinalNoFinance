@@ -25,7 +25,6 @@ public class EnemyCCTV : MonoBehaviour
     public float stopDistance = 1.5f;
     public float heightOffset = 1.5f;
 
-    private float timeSinceLastSeen = 0f;
     public float lostPlayerTime = 2f;
 
     private float timeInLight = 0f;

@@ -102,60 +102,26 @@ public class EnemyRobot : MonoBehaviour
 
     void DetectPlayer()
     {
-        // ค้นหาผู้เล่นในรัศมีของ Spot Light
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, enemyLight.pointLightOuterRadius);
-
         if (playerTransform == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
-        if (distanceToPlayer <= enemyLight.pointLightOuterRadius)
-        {
-            Vector2 directionToPlayer = (playerTransform.position - transform.position).normalized;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer);
-
-            if (hit.collider != null && hit.collider.gameObject == playerTransform.gameObject)
-            {
-                Debug.Log("✅ พบ Player!");
-                playerDetected = true;
-                timeInLight += Time.deltaTime; // นับเวลาที่ Player อยู่ในแสง
-
-                if (timeInLight >= timeToChangeScene)
-                {
-                    Debug.Log("🔄 เปลี่ยนซีน!");
-                    SceneManager.LoadScene(0); // แก้เป็นชื่อซีนที่ต้องการ
-                }
-            }
-            else
-            {
-                playerDetected = false;
-                timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากแสง
-            }
-        }
-        else
-        {
-            playerDetected = false;
-            timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากระยะ
-        }
-
-        if (playerTransform == null) return;
-
+        // ตรวจสอบว่าผู้เล่นอยู่ในรัศมีของแสงหรือไม่
         if (IsPlayerInSpotLight(playerTransform))
         {
-            Debug.Log("✅ Player ถูกจับได้ในแสง!");
+            Debug.Log("✅ Player อยู่ในแสง!");
             playerDetected = true;
-            timeInLight += Time.deltaTime;
+            timeInLight += Time.deltaTime; // เพิ่มเวลาที่อยู่ในแสง
 
             if (timeInLight >= timeToChangeScene)
             {
                 Debug.Log("🔄 เปลี่ยนซีน!");
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(8); // โหลดซีนถัดไป
             }
         }
         else
         {
-            Debug.Log("😎 Player หลบอยู่ในเงาหรือมีสิ่งกีดขวาง!");
+            Debug.Log("😎 Player หลบแสง!");
             playerDetected = false;
-            timeInLight = 0f;
+            timeInLight = 0f; // รีเซ็ตเวลาเมื่อ Player ออกจากแสง
         }
     }
 
@@ -282,11 +248,11 @@ public class EnemyRobot : MonoBehaviour
         // หันหน้าไปทาง Player โดยคงขนาดไว้ที่ 0.15
         if (directionX > 0)
         {
-            transform.localScale = new Vector3(0.5f, 0.5f, 1); // หันขวา
+            transform.localScale = new Vector3(0.3f, 0.3f, 1); // หันขวา
         }
         else if (directionX < 0)
         {
-            transform.localScale = new Vector3(-0.5f, 0.5f, 1); // หันซ้าย
+            transform.localScale = new Vector3(-0.3f, 0.3f, 1); // หันซ้าย
         }
     }
 }
