@@ -4,11 +4,13 @@ using System.Collections;
 
 public class TypewriterEffect : MonoBehaviour
 {
+    public GameObject dialogObj;
     public Text dialogText; // UI Text สำหรับแสดงข้อความ
     public float typingSpeed = 0.05f; // ความเร็วในการพิมพ์
     private string[] lines; // เก็บข้อความทั้งหมด
     private int index = 0;
     private bool isTyping = false;
+    public PlayerController playerController;
 
     void Update()
     {
@@ -51,7 +53,9 @@ public class TypewriterEffect : MonoBehaviour
         }
         else
         {
+            dialogObj.SetActive(false);
             gameObject.SetActive(false); // ซ่อน UI เมื่อข้อความจบ
+            playerController.enabled = true;
         }
     }
 }

@@ -21,7 +21,7 @@ public class Linghtningtrap : MonoBehaviour
     private void ShootFire()
     {
         currentFire = Instantiate(firePrefab, transform.position, Quaternion.identity);
-        Debug.Log("⚡Activated!");
+        //Debug.Log("⚡Activated!");
         isFiring = true;
         Destroy(currentFire, fireDuration);
         Invoke(nameof(StopFire), fireDuration);
@@ -31,7 +31,7 @@ public class Linghtningtrap : MonoBehaviour
     private void StopFire()
     {
         isFiring = false;
-        Debug.Log("⚡Stopped.");
+        //Debug.Log("⚡Stopped.");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

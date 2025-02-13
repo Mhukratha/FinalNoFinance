@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
          if (isGrounded)
         {
-            Debug.Log("Player is on the ground");
+            //Debug.Log("Player is on the ground");
         }
         else
         {
