@@ -21,11 +21,19 @@ public class PlayerController : MonoBehaviour
     private Transform zipEndPoint;
     private float zipSpeed;
     private bool canGrabZipline = false;
+    public Zipline startZipline;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        if (startZipline != null)
+        {
+            Debug.Log("🚀 Player starts on Zipline!");
+            zipEndPoint = startZipline.endPoint;
+            zipSpeed = startZipline.zipSpeed;
+            GrabZipline();
+        }
     }
 
     void Update()

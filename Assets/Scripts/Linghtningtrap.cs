@@ -1,4 +1,4 @@
-
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 
@@ -39,7 +39,7 @@ public class Linghtningtrap : MonoBehaviour
         if (isFiring && collision.CompareTag("Player"))
         {
             Debug.Log("⚡ Player hit");
-            gameOverUI.SetActive(true);
+            SceneManager.LoadScene(8);
             Destroy(collision.gameObject); 
         }
     }
