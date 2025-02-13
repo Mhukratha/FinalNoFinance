@@ -35,5 +35,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GAMEOVER.unity
     guid: c143bac49fb822f40b19fe7d6dab7f37
+  - enabled: 1
+    path: Assets/Scenes/TestPuzzle.unity
+    guid: a4f49f0ed8b86d044af15dc79ef9a406
+  - enabled: 1
+    path: Assets/Scenes/EndCutScene.unity
+    guid: cc454320ac3f35e47a19c3fd621b24c0
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

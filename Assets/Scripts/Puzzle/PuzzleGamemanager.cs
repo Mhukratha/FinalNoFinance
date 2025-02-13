@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Random = UnityEngine.Random;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PuzzleGamemanager : MonoBehaviour
 {
@@ -186,7 +187,7 @@ public class PuzzleGamemanager : MonoBehaviour
     {
         Debug.Log("Continue Pressed!");
         //โหลดฉากถัดไป
-        //Scene3.LoadScene(Scene3.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
 
